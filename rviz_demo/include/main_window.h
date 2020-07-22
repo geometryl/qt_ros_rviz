@@ -1,67 +1,44 @@
-/**
- * @file /include/rviz_demo/main_window.hpp
- *
- * @brief Qt based gui for rviz_demo.
- *
- * @date November 2010
- **/
 #ifndef rviz_demo_MAIN_WINDOW_H
 #define rviz_demo_MAIN_WINDOW_H
 
-/*****************************************************************************
-** Includes
-*****************************************************************************/
-
-#include "qnode.h"
-#include "rvizwidget.h"
-#include "ui_main_window.h"
+#include <ros/ros.h>
+#include <rviz/default_plugin/view_controllers/orbit_view_controller.h>
+#include <rviz/display.h>
+#include <rviz/panel.h>
+#include <rviz/render_panel.h>
+#include <rviz/tool_manager.h>
+#include <rviz/view_manager.h>
+#include <rviz/visualization_manager.h>
 #include <QMainWindow>
-
-/*****************************************************************************
-** Namespace
-*****************************************************************************/
+#include "ui_main_window.h"
 
 namespace rviz_demo {
-
-/*****************************************************************************
-** Interface [MainWindow]
-*****************************************************************************/
-/**
- * @brief Qt central, all operations relating to the view part here.
- */
 class MainWindow : public QMainWindow {
-    Q_OBJECT
+  Q_OBJECT
 
-public:
-    MainWindow(int argc, char **argv, QWidget *parent = 0);
-    ~MainWindow();
+ public:
+  MainWindow(QWidget *parent = 0);
+  ~MainWindow();
 
-    void ReadSettings();  // Load up qt program settings at startup
-    void WriteSettings(); // Save qt program settings when closing
+ public Q_SLOTS:
+  void on_btn_select_clicked(bool check);
+  void on_btn_movecamera_clicked(bool check);
+  void on_btn_marker_clicked(bool check);
+  void on_test_clicked(bool check);
+  void on_test2_clicked(bool check);
 
-    void closeEvent(QCloseEvent *event); // Overloaded function
-    void showNoMasterMessage();
+ private:
+  Ui::MainWindowDesign ui;
 
-public Q_SLOTS:
-    /******************************************
-    ** Auto-connections (connectSlotsByName())
-    *******************************************/
-    void on_actionAbout_triggered();
-    void on_button_connect_clicked(bool check);
-    void on_button_open_clicked(bool check);
-    void on_checkbox_use_environment_stateChanged(int state);
-
-    /******************************************
-    ** Manual connections
-    *******************************************/
-    void updateLoggingView(); // no idea why this can't connect automatically
-
-private:
-    Ui::MainWindowDesign ui;
-    QNode qnode;
-    RvizWidget *viz_;
+  rviz::RenderPanel *_render_panel = Q_NULLPTR;
+  rviz::VisualizationManager *_manager = Q_NULLPTR;
+  rviz::ToolManager *_tool_manager = Q_NULLPTR;
+  rviz::Tool *_current_tool = Q_NULLPTR;
+  rviz::Display *_urdf = Q_NULLPTR;
+  rviz::Display *_pcd_livox = Q_NULLPTR;
+  rviz::Display *_tf = Q_NULLPTR;
+  rviz::Display *_marker = Q_NULLPTR;
 };
+}  // namespace rviz_demo
 
-} // namespace rviz_demo
-
-#endif // rviz_demo_MAIN_WINDOW_H
+#endif  // rviz_demo_MAIN_WINDOW_H
